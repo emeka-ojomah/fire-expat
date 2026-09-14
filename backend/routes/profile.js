@@ -36,6 +36,8 @@ router.put('/', authMiddleware, async (req, res) => {
     current_savings,
     expected_return,
     target_retirement_age,
+    date_of_birth,
+    inflation_rate,
   } = req.body;
 
   if (!full_name || !base_currency) {
@@ -55,6 +57,12 @@ router.put('/', authMiddleware, async (req, res) => {
           current_savings: parseFloat(current_savings) || 0,
           expected_return: parseFloat(expected_return) || 7.0,
           target_retirement_age: parseInt(target_retirement_age) || 60,
+          // Both optional: date_of_birth unlocks a real "Projected FIRE Age",
+          // inflation_rate unlocks inflation-adjusted (real-return) projections.
+          date_of_birth: date_of_birth || null,
+          inflation_rate: inflation_rate !== undefined && inflation_rate !== null && inflation_rate !== ''
+            ? parseFloat(inflation_rate)
+            : 3.0,
         },
         { onConflict: 'id' }
       )
