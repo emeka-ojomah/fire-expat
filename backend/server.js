@@ -16,11 +16,13 @@ const authRoutes        = require('./routes/auth');
 const profileRoutes     = require('./routes/profile');
 const transactionRoutes = require('./routes/transactions');
 const exchangeRoutes    = require('./routes/exchange');
+const allocationRoutes  = require('./routes/allocations');
 
 app.use('/api/auth',         authRoutes);
 app.use('/api/profile',      profileRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/exchange',     exchangeRoutes);
+app.use('/api/allocations',  allocationRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Backend is alive' });
@@ -39,5 +41,5 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
   console.log(`✅ Backend running on http://localhost:${PORT}`);
-  console.log(`   Routes: /api/auth | /api/profile | /api/transactions | /api/exchange`);
+  console.log(`   Routes: /api/auth | /api/profile | /api/transactions | /api/exchange | /api/allocations`);
 });
