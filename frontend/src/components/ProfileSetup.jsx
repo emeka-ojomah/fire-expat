@@ -20,6 +20,8 @@ export default function ProfileSetup({ onProfileComplete }) {
     current_savings: '',
     expected_return: '7.0',
     target_retirement_age: '60',
+    date_of_birth: '',
+    inflation_rate: '3.0',
   });
   const [loading, setLoading] = useState(false);
   const [checkingProfile, setCheckingProfile] = useState(true);
@@ -39,6 +41,8 @@ export default function ProfileSetup({ onProfileComplete }) {
             current_savings: res.data.current_savings?.toString() || '',
             expected_return: res.data.expected_return?.toString() || '7.0',
             target_retirement_age: res.data.target_retirement_age?.toString() || '60',
+            date_of_birth: res.data.date_of_birth || '',
+            inflation_rate: res.data.inflation_rate?.toString() || '3.0',
           });
         }
       } catch (err) {
@@ -64,6 +68,7 @@ export default function ProfileSetup({ onProfileComplete }) {
     if (step === 3) {
       if (!profile.expected_return || isNaN(profile.expected_return)) { toast.error('Enter valid expected return'); return false; }
       if (!profile.target_retirement_age || isNaN(profile.target_retirement_age)) { toast.error('Enter valid retirement age'); return false; }
+      if (profile.inflation_rate !== '' && isNaN(profile.inflation_rate)) { toast.error('Enter a valid inflation rate'); return false; }
     }
     return true;
   };
@@ -86,6 +91,8 @@ export default function ProfileSetup({ onProfileComplete }) {
         current_savings: parseFloat(profile.current_savings),
         expected_return: parseFloat(profile.expected_return),
         target_retirement_age: parseInt(profile.target_retirement_age),
+        date_of_birth: profile.date_of_birth || null,
+        inflation_rate: profile.inflation_rate ? parseFloat(profile.inflation_rate) : 3.0,
       });
       toast.success('Profile saved! Welcome to fire-expat.');
       if (onProfileComplete) onProfileComplete();
@@ -264,6 +271,28 @@ export default function ProfileSetup({ onProfileComplete }) {
                 </div>
               </Field>
 
+              <Field label="Date of Birth (optional)" hint="Lets the dashboard show a projected FIRE age, not just years remaining">
+                <input
+                  style={styles.input}
+                  type="date"
+                  value={profile.date_of_birth}
+                  onChange={e => update('date_of_birth', e.target.value)}
+                />
+              </Field>
+
+              <Field label="Assumed Inflation Rate (%)" hint="Used to show inflation-adjusted projections; 2–3% is a common assumption">
+                <input
+                  style={styles.input}
+                  type="number"
+                  step="0.1"
+                  min="0"
+                  max="20"
+                  placeholder="3.0"
+                  value={profile.inflation_rate}
+                  onChange={e => update('inflation_rate', e.target.value)}
+                />
+              </Field>
+
               {/* Summary */}
               <div style={styles.summaryBox}>
                 <div style={styles.summaryTitle}>Profile Summary</div>
@@ -275,6 +304,7 @@ export default function ProfileSetup({ onProfileComplete }) {
                     ['Monthly Expenses', `${profile.base_currency} ${parseFloat(profile.monthly_expenses || 0).toLocaleString()}`],
                     ['FIRE Target', `${profile.base_currency} ${fireTarget || '—'}`],
                     ['Retire at', `Age ${profile.target_retirement_age}`],
+                    ['Inflation Assumption', `${profile.inflation_rate || '3.0'}%`],
                   ].map(([k, v]) => (
                     <div key={k} style={styles.summaryRow}>
                       <span style={styles.summaryKey}>{k}</span>
@@ -596,46 +626,4 @@ const styles = {
   nav: {
     display: 'flex',
     gap: 12,
-    marginTop: 28,
-    justifyContent: 'flex-end',
-  },
-  backBtn: {
-    background: 'transparent',
-    border: '1px solid rgba(255,255,255,0.1)',
-    borderRadius: 10,
-    padding: '12px 20px',
-    color: 'rgba(255,255,255,0.5)',
-    fontSize: 14,
-    cursor: 'pointer',
-    fontFamily: "'DM Sans', sans-serif",
-  },
-  nextBtn: {
-    background: 'rgba(245,197,66,0.1)',
-    border: '1px solid rgba(245,197,66,0.3)',
-    borderRadius: 10,
-    padding: '12px 24px',
-    color: '#F5C542',
-    fontSize: 14,
-    fontWeight: 600,
-    cursor: 'pointer',
-    fontFamily: "'DM Sans', sans-serif",
-  },
-  submitBtn: {
-    background: 'linear-gradient(135deg, #F5C542 0%, #e6a817 100%)',
-    border: 'none',
-    borderRadius: 10,
-    padding: '12px 28px',
-    color: '#0a0d14',
-    fontSize: 14,
-    fontWeight: 700,
-    cursor: 'pointer',
-    boxShadow: '0 4px 20px rgba(245,197,66,0.3)',
-    fontFamily: "'DM Sans', sans-serif",
-  },
-  btnDisabled: { opacity: 0.6, cursor: 'not-allowed' },
-  footerNote: {
-    textAlign: 'center',
-    fontSize: 12,
-    color: 'rgba(255,255,255,0.2)',
-  },
-};
+    
