@@ -24,7 +24,7 @@ function CustomTooltip({ active, payload, label, currency }) {
 
 export default function NetWorthChart({ data, currency }) {
   return (
-    <div className="bg-[#151E31] border border-slate-800 rounded-2xl p-5 h-full flex flex-col">
+    <div className="bg-[#151E31] border border-slate-800 rounded-2xl p-5 overflow-hidden">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="text-sm font-semibold text-slate-100">Net Worth Trajectory</h3>
@@ -32,7 +32,7 @@ export default function NetWorthChart({ data, currency }) {
         </div>
       </div>
 
-      <div className="flex-1 min-h-[280px]">
+      <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
             <defs>
