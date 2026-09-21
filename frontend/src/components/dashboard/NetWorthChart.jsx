@@ -16,7 +16,8 @@ function CustomTooltip({ active, payload, label, currency }) {
 }
 
 export default function NetWorthChart({ data, currency }) {
-  const hasData = Array.isArray(data) && data.some((d) => d.savings > 0 || d.target > 0);
+  const safeData = Array.isArray(data) ? data : [];
+  const hasData = safeData.some((d) => d.savings > 0 || d.target > 0);
 
   return (
     <div className="bg-[#151E31] border border-slate-800 rounded-2xl p-5 overflow-hidden">
@@ -36,9 +37,9 @@ export default function NetWorthChart({ data, currency }) {
           </p>
         </div>
       ) : (
-        <div className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+        <div className="h-80 w-full min-w-0">
+          <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+            <AreaChart data={safeData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="savingsGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#0EA5E9" stopOpacity={0.35} />
@@ -55,7 +56,6 @@ export default function NetWorthChart({ data, currency }) {
                 tick={{ fill: '#64748b', fontSize: 11 }}
                 axisLine={{ stroke: '#1e293b' }}
                 tickLine={false}
-                label={{ value: 'Years from now', position: 'insideBottom', offset: -4, fill: '#475569', fontSize: 11 }}
               />
               <YAxis
                 tick={{ fill: '#64748b', fontSize: 11 }}
