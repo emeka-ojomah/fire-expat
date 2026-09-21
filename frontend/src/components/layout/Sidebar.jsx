@@ -1,13 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import {
-  LayoutDashboard,
-  Wallet,
-  TrendingUp,
-  PieChart,
-  Settings,
-  LogOut,
-} from 'lucide-react';
+import { LayoutDashboard, Wallet, TrendingUp, PieChart, Settings, LogOut } from 'lucide-react';
 import BrandMark from '../ui/BrandMark';
 
 const NAV_ITEMS = [
@@ -18,16 +11,10 @@ const NAV_ITEMS = [
   { to: '/settings',    label: 'Settings',            mobileLabel: 'Settings', icon: Settings },
 ];
 
-/**
- * Desktop: fixed vertical sidebar (>= md).
- * Mobile: fixed bottom tab bar (< md) — rendered by the same component so
- * active-state logic lives in one place.
- */
 export default function Sidebar({ setIsAuthenticated }) {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Match exact path OR any nested path under it (e.g. /settings/profile).
   const isActive = (path) =>
     location.pathname === path || location.pathname.startsWith(path + '/');
 
@@ -40,7 +27,6 @@ export default function Sidebar({ setIsAuthenticated }) {
 
   return (
     <>
-      {/* Desktop sidebar */}
       <aside className="hidden md:flex md:flex-col md:w-64 md:shrink-0 md:sticky md:top-0 md:h-[100dvh] bg-[#0B1220] border-r border-slate-800">
         <div className="flex items-center px-6 h-16 border-b border-slate-800">
           <BrandMark size="sm" />
@@ -75,7 +61,6 @@ export default function Sidebar({ setIsAuthenticated }) {
         </div>
       </aside>
 
-      {/* Mobile bottom tab bar */}
       <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-[#0B1220]/95 backdrop-blur-lg border-t border-slate-800 pb-[env(safe-area-inset-bottom)]">
         <div className="flex items-stretch">
           {NAV_ITEMS.map(({ to, mobileLabel, icon: Icon }) => (
