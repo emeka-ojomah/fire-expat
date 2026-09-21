@@ -3,7 +3,7 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 const COLORS = ['#4F46E5', '#0EA5E9', '#F5C542', '#10B981', '#EC4899', '#8B5CF6'];
 
 export default function AllocationDonut({
-  data,
+  data = [],
   currency,
   title = 'Currency Allocation',
   subtitle = 'Net savings by transaction currency',
@@ -17,9 +17,7 @@ export default function AllocationDonut({
       <p className="text-xs text-slate-500 mb-4">{subtitle}</p>
 
       {total === 0 ? (
-        <p className="text-xs text-slate-500 py-10 text-center">
-          {emptyMessage}
-        </p>
+        <p className="text-xs text-slate-500 py-10 text-center">{emptyMessage}</p>
       ) : (
         <>
           <div className="h-40">
@@ -58,10 +56,7 @@ export default function AllocationDonut({
             {data.map((entry, i) => (
               <div key={entry.name} className="flex items-center justify-between text-xs">
                 <span className="flex items-center gap-2 text-slate-400">
-                  <span
-                    className="w-2 h-2 rounded-full"
-                    style={{ background: COLORS[i % COLORS.length] }}
-                  />
+                  <span className="w-2 h-2 rounded-full" style={{ background: COLORS[i % COLORS.length] }} />
                   {entry.name}
                 </span>
                 <span className="text-slate-300 tabular-nums">
