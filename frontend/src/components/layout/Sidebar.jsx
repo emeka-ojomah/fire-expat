@@ -8,13 +8,14 @@ import {
   Settings,
   LogOut,
 } from 'lucide-react';
+import BrandMark from '../ui/BrandMark';
 
 const NAV_ITEMS = [
-  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/savings', label: 'Savings Tracker', icon: Wallet },
-  { to: '/forecast', label: 'Retirement Forecast', icon: TrendingUp },
-  { to: '/allocations', label: 'Asset Allocations', icon: PieChart },
-  { to: '/settings', label: 'Settings', icon: Settings },
+  { to: '/dashboard',   label: 'Dashboard',           mobileLabel: 'Home',     icon: LayoutDashboard },
+  { to: '/savings',     label: 'Savings Tracker',     mobileLabel: 'Savings',  icon: Wallet },
+  { to: '/forecast',    label: 'Retirement Forecast', mobileLabel: 'Forecast', icon: TrendingUp },
+  { to: '/allocations', label: 'Asset Allocations',   mobileLabel: 'Assets',   icon: PieChart },
+  { to: '/settings',    label: 'Settings',            mobileLabel: 'Settings', icon: Settings },
 ];
 
 /**
@@ -25,7 +26,10 @@ const NAV_ITEMS = [
 export default function Sidebar({ setIsAuthenticated }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const isActive = (path) => location.pathname === path;
+
+  // Match exact path OR any nested path under it (e.g. /settings/profile).
+  const isActive = (path) =>
+    location.pathname === path || location.pathname.startsWith(path + '/');
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -37,17 +41,9 @@ export default function Sidebar({ setIsAuthenticated }) {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="hidden md:flex md:flex-col md:w-64 md:shrink-0 md:h-screen md:sticky md:top-0 bg-[#0B1220] border-r border-slate-800">
-        <div className="flex items-center gap-2.5 px-6 h-16 border-b border-slate-800">
-          <div className="w-8 h-8 rounded-lg bg-indigo-600/15 border border-indigo-500/30 flex items-center justify-center">
-            <svg width="16" height="16" viewBox="0 0 28 28" fill="none">
-              <path d="M14 2L24 8V20L14 26L4 20V8L14 2Z" stroke="#6366F1" strokeWidth="1.5" fill="none" />
-              <circle cx="14" cy="14" r="3" fill="#6366F1" />
-            </svg>
-          </div>
-          <span className="text-[15px] font-semibold text-slate-100 tracking-tight">
-            fire<span className="text-indigo-400">-expat</span>
-          </span>
+      <aside className="hidden md:flex md:flex-col md:w-64 md:shrink-0 md:sticky md:top-0 md:h-[100dvh] bg-[#0B1220] border-r border-slate-800">
+        <div className="flex items-center px-6 h-16 border-b border-slate-800">
+          <BrandMark size="sm" />
         </div>
 
         <nav className="flex-1 px-3 py-5 space-y-1">
@@ -55,6 +51,7 @@ export default function Sidebar({ setIsAuthenticated }) {
             <Link
               key={to}
               to={to}
+              aria-current={isActive(to) ? 'page' : undefined}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
                 isActive(to)
                   ? 'bg-indigo-500/10 text-indigo-300 font-medium'
@@ -80,21 +77,22 @@ export default function Sidebar({ setIsAuthenticated }) {
 
       {/* Mobile bottom tab bar */}
       <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-[#0B1220]/95 backdrop-blur-lg border-t border-slate-800 pb-[env(safe-area-inset-bottom)]">
-        <div className="flex items-center justify-between px-1">
-          {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
+        <div className="flex items-stretch">
+          {NAV_ITEMS.map(({ to, mobileLabel, icon: Icon }) => (
             <Link
               key={to}
               to={to}
-              className={`flex-1 flex flex-col items-center gap-1 py-2.5 text-[10px] ${
+              aria-current={isActive(to) ? 'page' : undefined}
+              className={`flex-1 flex flex-col items-center justify-center gap-1 py-2.5 text-[10px] min-w-0 ${
                 isActive(to) ? 'text-indigo-400' : 'text-slate-500'
               }`}
             >
               <Icon size={19} strokeWidth={2} />
-              <span className="truncate max-w-[56px]">{label.split(' ')[0]}</span>
+              <span className="truncate">{mobileLabel}</span>
             </Link>
           ))}
         </div>
       </nav>
     </>
   );
-              }
+}
