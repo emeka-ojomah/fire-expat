@@ -9,7 +9,8 @@ export default function AllocationDonut({
   subtitle = 'Net savings by transaction currency',
   emptyMessage = 'No transactions yet — add some in Savings Tracker.',
 }) {
-  const total = data.reduce((sum, d) => sum + d.value, 0);
+  const safeData = Array.isArray(data) ? data : [];
+  const total = safeData.reduce((sum, d) => sum + d.value, 0);
 
   return (
     <div className="bg-[#151E31] border border-slate-800 rounded-2xl p-5">
@@ -20,19 +21,20 @@ export default function AllocationDonut({
         <p className="text-xs text-slate-500 py-10 text-center">{emptyMessage}</p>
       ) : (
         <>
-          <div className="h-40">
-            <ResponsiveContainer width="100%" height="100%">
+          <div className="h-40 w-full min-w-0">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
               <PieChart>
                 <Pie
-                  data={data}
+                  data={safeData}
                   dataKey="value"
                   nameKey="name"
                   innerRadius={48}
                   outerRadius={68}
                   paddingAngle={3}
                   stroke="none"
+                  isAnimationActive={false}
                 >
-                  {data.map((entry, i) => (
+                  {safeData.map((entry, i) => (
                     <Cell key={entry.name} fill={COLORS[i % COLORS.length]} />
                   ))}
                 </Pie>
@@ -53,7 +55,7 @@ export default function AllocationDonut({
           </div>
 
           <div className="space-y-2 mt-2">
-            {data.map((entry, i) => (
+            {safeData.map((entry, i) => (
               <div key={entry.name} className="flex items-center justify-between text-xs">
                 <span className="flex items-center gap-2 text-slate-400">
                   <span className="w-2 h-2 rounded-full" style={{ background: COLORS[i % COLORS.length] }} />
